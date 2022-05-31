@@ -18,4 +18,4 @@ to set up your MONGO DB
 
 create a .env file in root folder and enter your monogo DB string
 
-> MONGO_URI= mongodb+srv://YOUR-NAME:YOUR-PASSWORD@YOUR-DATA-BASE.jtp6t6s.mongodb.net/YOUR-DB-COLLECTION?retryWrites=true&w=majority
+> MONGO_URI= mongodb+srv://YOUR-NAME:YOUR-PASSWORD@YOUR-DATA-BASE.jtp6t6s.mongodb.net/YOUR-DBretryWrites=true&w=majority
