@@ -1,18 +1,19 @@
 const { query } = require('express');
-const product = require('../models/product');
+const { restart } = require('nodemon');
+const Product = require('../models/product');
 
 
 const getAllProductsStatic = async(req, res) => {
 
 
-    const products = await product.find({ price: { $gt: 30 } })
-        .sort('price')
-        .select('name price')
-        .limit(10)
-        .skip(1);
-    res.status(200).json({ hits: products.length, products })
-}
-
+        const products = await Product.find({ price: { $gt: 30 } })
+            .sort('price')
+            .select('name price')
+            .limit(10)
+            .skip(1);
+        res.status(200).json({ hits: products.length, products })
+    }
+    // get all products
 const getAllProducts = async(req, res) => {
     const { name, featured, company, sort, fields, filter } = req.query;
 
@@ -49,13 +50,7 @@ const getAllProducts = async(req, res) => {
             }
         });
     }
-
-
-
-
-
-
-    let result = product.find(queryObject);
+    let result = Product.find(queryObject);
     if (sort) {
         const sortList = sort.split(',').join(' ');
         result = result.sort(sortList);
@@ -76,7 +71,62 @@ const getAllProducts = async(req, res) => {
     res.status(200).json({ hits: products.length, products })
 }
 
+// create a product
+const createProduct = async(req, res) => {
+    const product = await Product.create(req.body)
+    res.status(201).json({ status: 'created', product })
+}
+
+//delete a product
+
+const deleteProduct = async(req, res) => {
+    const { id } = req.params
+    const product = await Product.findByIdAndDelete({ _id: id });
+
+    if (!product) {
+        throw new Error('Not found');
+
+    }
+    res.status(200).json({ status: 'success', message: `Product deleted Successfully` })
+}
+
+// update a product
+const updateProduct = async(req, res) => {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate({ _id: id }, req.body, {
+        new: true,
+        runValidators: true
+    });
+    if (!product) {
+        throw new Error('Not found');
+
+    }
+    res.status(200).json({ status: 'success', product })
+
+
+}
+
+// get one product by ID
+
+const getProductByID = async(req, res) => {
+    const { id } = req.params;
+    const product = await Product.findByIdAndUpdate({ _id: id });
+    if (!product) {
+        throw new Error('Not found');
+
+    }
+    res.status(200).json({ status: 'success', product })
+
+
+
+}
+
 module.exports = {
     getAllProductsStatic,
-    getAllProducts
+    getAllProducts,
+    createProduct,
+    deleteProduct,
+    updateProduct,
+    getProductByID
+
 }
